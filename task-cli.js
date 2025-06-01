@@ -26,8 +26,7 @@ const CreateTask = () => {
     }
     const newTaskDescription = process.argv[3];
     const now = new Date().toISOString();
-
-    const newTask = {
+const newTask = {
         id: newTaskId,
         description: newTaskDescription,
         status:"todo",
@@ -55,8 +54,33 @@ const CreateTask = () => {
 
     }
 
+const deleteTask = () => {
+    let allTask;
+
+    try{
+        const fileContent = fs.readFileSync('task.json', 'utf-8');
+        allTask = JSON.parse(fileContent);
+    }catch (error) {
+        if (error.code === 'ENOENT') {
+            console.log("the is no task's");
+            allTask = []
+        }else{
+            console.log("Error related to task file: ", error.message);
+            return;
+        }
+    }
+    let taskIndex = parseInt(process.argv[3]) - 1;
+    allTask.splice(taskIndex,1)
+
+    const updatedJsonString = JSON.stringify(allTask, null, 2);
+    fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
+}
+
 if (process.argv[2] == "create") {
     CreateTask();
+}
+if (process.argv[2] == "delete") {
+    deleteTask();
 }
 if (process.argv[2] == "list-all") {
     listAll();
