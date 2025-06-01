@@ -39,7 +39,25 @@ const CreateTask = () => {
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
     console.log(`you have added a task successfully (ID: ${newTaskId})`)
     };
+    const listAll = () =>{
+    try{
+        let fileContent = fs.readFileSync('task.json', 'utf-8');
+        fileContent= JSON.parse(fileContent);
+        console.log(fileContent)
+    }catch (error) {
+        if (error.code === 'ENOENT') {
+            console.log("the is no task's");
+        }else{
+            console.log("Error related to task file: ", error.message);
+            return;
+        }
+    }
+
+    }
 
 if (process.argv[2] == "create") {
     CreateTask();
+}
+if (process.argv[2] == "list-all") {
+    listAll();
 }
