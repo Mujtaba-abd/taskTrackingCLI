@@ -1,10 +1,45 @@
 #!/usr/bin/env node
 // import {argv} from "node:process"
-const argv = require("node:process")
+const argv = require("node:process");
+const fs = require("fs")
 
-function main(){
-    console.log("hello this is a cli app")
-    console.log(process.argv[2])
+const CreateTask = () => {
+    let allTask;
+
+    try{
+        const fileContent = fs.readFileSync('task.json', 'utf-8');
+        allTask = JSON.parse(fileContent);
+    }catch (error) {
+        if (error.code === 'ENOENT') {
+        allTask = [];
+        }else{
+            console.log("Error related to task file: ", error.message);
+            return;
+        }
+    }
+    let newTaskId;
+    if (allTask.length === 0) {
+        newTaskId = 1;
+    }else{
+        const maxTaskId = Math.max(...allTask.map(task => task.id));
+        newTaskId = maxTaskId+1;
+    }
+    const newTaskDescription = process.argv[3];
+    const now = new Date().toISOString();
+
+    const newTask = {
+        id: newTaskId,
+        description: newTaskDescription,
+        status:"todo",
+        createdAt: now,
+        updatedAt: now
+    }
+    allTask.push(newTask);
+    const updatedJsonString = JSON.stringify(allTask, null, 2);
+    fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
+    console.log(`you have added a task successfully (ID: ${newTaskId})`)
+    };
+
+if (process.argv[2] == "create") {
+    CreateTask();
 }
-
-main()
