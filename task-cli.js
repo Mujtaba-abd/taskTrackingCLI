@@ -69,11 +69,44 @@ const deleteTask = () => {
             return;
         }
     }
-    let taskIndex = parseInt(process.argv[3]) - 1;
-    allTask.splice(taskIndex,1)
+    let taskIndex = -1;
+    let taskToDelete = process.argv[3]
+    for (let i  = 0; i  < allTask.length; i ++) {
+        if (allTask[i].id == taskToDelete) {
+            taskIndex = i;
+        }
+    }
+    if (taskIndex != -1) {
+        allTask.splice(taskIndex,1)
+    }else{
+        console.log(`Error: task with ID:${taskToDelete} not found. `)
+    }
 
     const updatedJsonString = JSON.stringify(allTask, null, 2);
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
+}
+const updateTask = () => {
+    let allTask;
+
+    try{
+        const fileContent = fs.readFileSync('task.json', 'utf-8');
+        allTask = JSON.parse(fileContent);
+    }catch (error) {
+        if (error.code === 'ENOENT') {
+            console.log("the is no task's");
+            allTask = []
+        }else{
+            console.log("Error related to task file: ", error.message);
+            return;
+        }
+    }
+    let taskIndex = parseInt(process.argv[3]) - 1;
+    allTask[taskIndex].description= process.argv[4];
+    allTask[taskIndex].updatedAt= new Date().toISOString();
+
+    const updatedJsonString = JSON.stringify(allTask, null, 2);
+    fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
+
 }
 
 if (process.argv[2] == "create") {
@@ -81,6 +114,9 @@ if (process.argv[2] == "create") {
 }
 if (process.argv[2] == "delete") {
     deleteTask();
+}
+if (process.argv[2] == "update") {
+    updateTask();
 }
 if (process.argv[2] == "list-all") {
     listAll();
