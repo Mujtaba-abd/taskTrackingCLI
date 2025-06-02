@@ -29,7 +29,7 @@ const CreateTask = () => {
 const newTask = {
         id: newTaskId,
         description: newTaskDescription,
-        status:"todo",
+        status:"in progress",
         createdAt: now,
         updatedAt: now
     }
@@ -118,6 +118,39 @@ const updateTask = () => {
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
 
 }
+const markDone = () => {
+    let allTask;
+
+    try{
+        const fileContent = fs.readFileSync('task.json', 'utf-8');
+        allTask = JSON.parse(fileContent);
+    }catch (error) {
+        if (error.code === 'ENOENT') {
+            console.log("the is no task's");
+            allTask = []
+        }else{
+            console.log("Error related to task file: ", error.message);
+            return;
+        }
+    }
+    let taskIndex = -1;
+    let taskToMarkDone = process.argv[3];
+    for (let i  = 0; i  < allTask.length; i ++) {
+        if (allTask[i].id == taskToMarkDone) {
+            taskIndex = i;
+        }
+    }
+    if (taskIndex != -1) {
+        allTask[taskIndex].status= "done";
+        allTask[taskIndex].updatedAt= new Date().toISOString();
+    }else{
+        console.log(`Error: task with ID:${taskToDelete} not found. `)
+    }
+
+    const updatedJsonString = JSON.stringify(allTask, null, 2);
+    fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
+
+}
 
 if (process.argv[2] == "create") {
     CreateTask();
@@ -130,4 +163,7 @@ if (process.argv[2] == "update") {
 }
 if (process.argv[2] == "list-all") {
     listAll();
+}
+if (process.argv[2] == "mark-done") {
+    markDone();
 }
