@@ -30,38 +30,36 @@ const newTask = {
 const listTask = () =>{
     let typeOfListing = process.argv[2];
     let allTask = loadTasks();
-    try{
-        if (typeOfListing == "list-all") {
-            console.log(allTask)
-        }else if (typeOfListing == "list-done") {
-            for (let i  = 0; i  < allTask.length; i ++) {
-                if (allTask[i].status == "done") {
-                    console.log(allTask[i])
-                }
-            }
-        }else if(typeOfListing == "list-in-progress"){
-            for (let i  = 0; i  < allTask.length; i ++) {
-                if (allTask[i].status == "in progress") {
-                    console.log(allTask[i])
-                }
-            }
-        }else if(typeOfListing == "list-todo"){
-            for (let i  = 0; i  < allTask.length; i ++) {
-                if (allTask[i].status == "todo") {
-                    console.log(allTask[i])
-                }
-            }
-        }
-    }catch (error) {
-        if (error.code === 'ENOENT') {
-            console.log("the is no task's");
-        }else{
-            console.log("Error related to task file: ", error.message);
+
+    switch (typeOfListing) {
+        case "list-all": 
+            filteredTasks = allTask;
+            break;
+        case "list-done":
+            filteredTasks = allTask.filter(task => task.status === "done");
+            break;
+        case "list-in-progress": // Match your example's 'in-progress'
+            filteredTasks = allTask.filter(task => task.status === "in-progress");
+            break;
+        case "list-todo":
+            filteredTasks = allTask.filter(task => task.status === "todo");
+            break;
+        default:
+            console.log("Usage: task-cli list [all|done|in-progress|todo]");
             return;
-        }
+    }
+    if (filteredTasks.length === 0) {
+        console.log(`No tasks found with status "${typeOfListing}".`);
+        return;
+    }else{
+        console.log(`\n--- Your Tasks (${typeOfListing}) ---`);
+        filteredTasks.forEach(task => {
+            console.log(`ID: ${String(task.id).padStart(3)} | Status: ${task.status.padEnd(12)} | ${task.description}`);
+    });
+    console.log("----------------------------------\n");
+    }
     }
 
-    }
 
 const  loadTasks=  () => {
     try{
