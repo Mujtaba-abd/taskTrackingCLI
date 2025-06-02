@@ -43,24 +43,22 @@ const listAll = () =>{
 
     }
 const listDone = () =>{
-    let typeOfListing = process.argv[3];
+    let typeOfListing = process.argv[2];
+    let allTask = loadTasks();
     try{
-        let fileContent = fs.readFileSync('task.json', 'utf-8');
-        fileContent= JSON.parse(fileContent);
-        for (let i  = 0; i  < allTask.length; i ++) {
-            if (allTask[i].status == "done") {
-                console.log(alltask[i])
+        if (typeOfListing == "list-done") {
+            for (let i  = 0; i  < allTask.length; i ++) {
+                if (allTask[i].status == "done") {
+                    console.log(allTask[i])
+                }
+            }
+        }else if(typeOfListing == "list-in-progress"){
+            for (let i  = 0; i  < allTask.length; i ++) {
+                if (allTask[i].status == "in progress") {
+                    console.log(allTask[i])
+                }
             }
         }
-        if (taskIndex != -1) {
-            allTask.splice(taskIndex,1)
-        }else{
-            console.log(`Error: task with ID:${taskToDelete} not found. `)
-        }
-        if (typeOfListing == "list-done") {
-            
-        }
-        console.log(fileContent)
     }catch (error) {
         if (error.code === 'ENOENT') {
             console.log("the is no task's");
@@ -175,7 +173,7 @@ if (process.argv[2] == "update") {
 if (process.argv[2] == "list-all") {
     listAll();
 }
-if (process.argv[2] == "list-done") {
+if (process.argv[2] == "list-done" || process.argv[2] == "list-in-progress") {
     listDone();
 }
 if (process.argv[2] == "mark-done" ||process.argv[2] == "mark-in-progress") {
