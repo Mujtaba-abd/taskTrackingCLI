@@ -4,21 +4,10 @@ const argv = require("node:process");
 const fs = require("fs")
 
 const CreateTask = () => {
-    let allTask;
-
-    try{
-        const fileContent = fs.readFileSync('task.json', 'utf-8');
-        allTask = JSON.parse(fileContent);
-    }catch (error) {
-        if (error.code === 'ENOENT') {
-        allTask = [];
-        }else{
-            console.log("Error related to task file: ", error.message);
-            return;
-        }
-    }
+    let allTask = loadTasks();
+    console.log(typeof(allTask))
     let newTaskId;
-    if (allTask.length === 0) {
+    if (allTask.length == 0) {
         newTaskId = 1;
     }else{
         const maxTaskId = Math.max(...allTask.map(task => task.id));
@@ -38,7 +27,7 @@ const newTask = {
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
     console.log(`you have added a task successfully (ID: ${newTaskId})`)
     };
-    const listAll = () =>{
+const listAll = () =>{
     try{
         let fileContent = fs.readFileSync('task.json', 'utf-8');
         fileContent= JSON.parse(fileContent);
@@ -53,22 +42,53 @@ const newTask = {
     }
 
     }
-
-const deleteTask = () => {
-    let allTask;
-
+const listDone = () =>{
+    let typeOfListing = process.argv[3];
     try{
-        const fileContent = fs.readFileSync('task.json', 'utf-8');
-        allTask = JSON.parse(fileContent);
+        let fileContent = fs.readFileSync('task.json', 'utf-8');
+        fileContent= JSON.parse(fileContent);
+        for (let i  = 0; i  < allTask.length; i ++) {
+            if (allTask[i].status == "done") {
+                console.log(alltask[i])
+            }
+        }
+        if (taskIndex != -1) {
+            allTask.splice(taskIndex,1)
+        }else{
+            console.log(`Error: task with ID:${taskToDelete} not found. `)
+        }
+        if (typeOfListing == "list-done") {
+            
+        }
+        console.log(fileContent)
     }catch (error) {
         if (error.code === 'ENOENT') {
             console.log("the is no task's");
-            allTask = []
         }else{
             console.log("Error related to task file: ", error.message);
             return;
         }
     }
+
+    }
+
+const  loadTasks=  () => {
+    try{
+        const fileContent = fs.readFileSync('task.json', 'utf-8');
+        return JSON.parse(fileContent);
+    }catch (error) {
+        if (error.code === 'ENOENT') {
+            console.log("the is no task's");
+            return [];
+        }else{
+            console.log("Error related to task file: ", error.message);
+            return [];
+        }
+    }
+}
+
+const deleteTask = () => {
+    let allTask = loadTasks();
     let taskIndex = -1;
     let taskToDelete = process.argv[3]
     for (let i  = 0; i  < allTask.length; i ++) {
@@ -86,20 +106,7 @@ const deleteTask = () => {
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
 }
 const updateTask = () => {
-    let allTask;
-
-    try{
-        const fileContent = fs.readFileSync('task.json', 'utf-8');
-        allTask = JSON.parse(fileContent);
-    }catch (error) {
-        if (error.code === 'ENOENT') {
-            console.log("the is no task's");
-            allTask = []
-        }else{
-            console.log("Error related to task file: ", error.message);
-            return;
-        }
-    }
+    let allTask = loadTasks();
     let taskIndex = -1;
     let taskToUpdate = process.argv[3];
     for (let i  = 0; i  < allTask.length; i ++) {
@@ -118,7 +125,7 @@ const updateTask = () => {
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
 
 }
-const markDone = () => {
+const markTask = () => {
     let allTask;
     let markType = process.argv[2];
 
@@ -167,6 +174,9 @@ if (process.argv[2] == "update") {
 }
 if (process.argv[2] == "list-all") {
     listAll();
+}
+if (process.argv[2] == "list-done") {
+    listDone();
 }
 if (process.argv[2] == "mark-done" ||process.argv[2] == "mark-in-progress") {
     markTask();
