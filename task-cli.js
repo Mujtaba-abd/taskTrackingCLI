@@ -18,7 +18,7 @@ const CreateTask = () => {
 const newTask = {
         id: newTaskId,
         description: newTaskDescription,
-        status:"in progress",
+        status:"todo",
         createdAt: now,
         updatedAt: now
     }
@@ -27,26 +27,14 @@ const newTask = {
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
     console.log(`you have added a task successfully (ID: ${newTaskId})`)
     };
-const listAll = () =>{
-    try{
-        let fileContent = fs.readFileSync('task.json', 'utf-8');
-        fileContent= JSON.parse(fileContent);
-        console.log(fileContent)
-    }catch (error) {
-        if (error.code === 'ENOENT') {
-            console.log("the is no task's");
-        }else{
-            console.log("Error related to task file: ", error.message);
-            return;
-        }
-    }
 
-    }
-const listDone = () =>{
+const listTask = () =>{
     let typeOfListing = process.argv[2];
     let allTask = loadTasks();
     try{
-        if (typeOfListing == "list-done") {
+        if (typeOfListing == "list-all") {
+            console.log(allTask)
+        }else if (typeOfListing == "list-done") {
             for (let i  = 0; i  < allTask.length; i ++) {
                 if (allTask[i].status == "done") {
                     console.log(allTask[i])
@@ -55,6 +43,12 @@ const listDone = () =>{
         }else if(typeOfListing == "list-in-progress"){
             for (let i  = 0; i  < allTask.length; i ++) {
                 if (allTask[i].status == "in progress") {
+                    console.log(allTask[i])
+                }
+            }
+        }else if(typeOfListing == "list-todo"){
+            for (let i  = 0; i  < allTask.length; i ++) {
+                if (allTask[i].status == "todo") {
                     console.log(allTask[i])
                 }
             }
@@ -161,21 +155,19 @@ const markTask = () => {
 
 }
 
-if (process.argv[2] == "create") {
+const command = process.argv[2];
+if (command == "create") {
     CreateTask();
 }
-if (process.argv[2] == "delete") {
+if (command == "delete") {
     deleteTask();
 }
-if (process.argv[2] == "update") {
+if (command == "update") {
     updateTask();
 }
-if (process.argv[2] == "list-all") {
-    listAll();
+if (command == "list-done" || command == "list-in-progress" || command == "list-todo" || command == "list-all") {
+    listTask();
 }
-if (process.argv[2] == "list-done" || process.argv[2] == "list-in-progress") {
-    listDone();
-}
-if (process.argv[2] == "mark-done" ||process.argv[2] == "mark-in-progress") {
+if (command == "mark-done" ||command == "mark-in-progress") {
     markTask();
 }
