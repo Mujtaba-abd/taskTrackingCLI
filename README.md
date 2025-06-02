@@ -28,4 +28,4 @@ task-cli list-in-progress
 task-cli list-todo
 ```
 
-funFact i stared writing the project yesterday but forgot to press start project on the project page in roadmap.sh
+Fun Fact i stared writing the project yesterday but forgot to press start project on the project page in roadmap.sh
