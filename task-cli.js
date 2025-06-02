@@ -12,8 +12,7 @@ const CreateTask = () => {
     }else{
         const maxTaskId = Math.max(...allTask.map(task => task.id));
         newTaskId = maxTaskId+1;
-    }
-    const newTaskDescription = process.argv[3];
+    } const newTaskDescription = process.argv[3];
     const now = new Date().toISOString();
 const newTask = {
         id: newTaskId,
@@ -154,6 +153,10 @@ const markTask = () => {
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
 
 }
+const help = () => {
+    let fileContent = fs.readFileSync('help', 'utf-8');
+    console.log(fileContent);
+}
 
 const command = process.argv[2];
 if (command == "create") {
@@ -170,4 +173,7 @@ if (command == "list-done" || command == "list-in-progress" || command == "list-
 }
 if (command == "mark-done" ||command == "mark-in-progress") {
     markTask();
+}
+if (command == "help") {
+    help();
 }

@@ -1,13 +1,3 @@
-# taskTrackingCLI
-
-The Project URL: https://roadmap.sh/projects/task-tracker
-
-## Geting started 
-
-```shell
-# list the commands
-task-cli help
-
 # adding tasks
 task-cli create "go to the store"
 
@@ -26,4 +16,3 @@ task-cli list-all
 task-cli list-done
 task-cli list-in-progress
 task-cli list-todo
-```
