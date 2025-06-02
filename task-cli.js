@@ -120,6 +120,7 @@ const updateTask = () => {
 }
 const markDone = () => {
     let allTask;
+    let markType = process.argv[2];
 
     try{
         const fileContent = fs.readFileSync('task.json', 'utf-8');
@@ -140,8 +141,11 @@ const markDone = () => {
             taskIndex = i;
         }
     }
-    if (taskIndex != -1) {
+    if (taskIndex != -1 && markType == "mark-done") {
         allTask[taskIndex].status= "done";
+        allTask[taskIndex].updatedAt= new Date().toISOString();
+    }else if(taskIndex != -1 && markType == "mark-in-progress"){
+        allTask[taskIndex].status= "in progress";
         allTask[taskIndex].updatedAt= new Date().toISOString();
     }else{
         console.log(`Error: task with ID:${taskToDelete} not found. `)
@@ -164,6 +168,6 @@ if (process.argv[2] == "update") {
 if (process.argv[2] == "list-all") {
     listAll();
 }
-if (process.argv[2] == "mark-done") {
-    markDone();
+if (process.argv[2] == "mark-done" ||process.argv[2] == "mark-in-progress") {
+    markTask();
 }
