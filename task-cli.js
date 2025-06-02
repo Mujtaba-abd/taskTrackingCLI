@@ -100,9 +100,19 @@ const updateTask = () => {
             return;
         }
     }
-    let taskIndex = parseInt(process.argv[3]) - 1;
-    allTask[taskIndex].description= process.argv[4];
-    allTask[taskIndex].updatedAt= new Date().toISOString();
+    let taskIndex = -1;
+    let taskToUpdate = process.argv[3];
+    for (let i  = 0; i  < allTask.length; i ++) {
+        if (allTask[i].id == taskToUpdate) {
+            taskIndex = i;
+        }
+    }
+    if (taskIndex != -1) {
+        allTask[taskIndex].description= process.argv[4];
+        allTask[taskIndex].updatedAt= new Date().toISOString();
+    }else{
+        console.log(`Error: task with ID:${taskToDelete} not found. `)
+    }
 
     const updatedJsonString = JSON.stringify(allTask, null, 2);
     fs.writeFileSync('task.json', updatedJsonString, 'utf-8');
